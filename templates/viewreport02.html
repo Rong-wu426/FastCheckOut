@@ -6,62 +6,52 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <style>
-         body {
+        body {
             margin: 0;
         }
-        .header {
+        .top-buttons {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background-color: #f0f0f0; 
-            color:  #333;
+            background-color: black;
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px 40px;
             z-index: 1000;
         }
-        .header h1 {
+        .top-buttons h1 {
             margin: 0;
-            font-size: 3.5em;
-            font-weight: bold;
+            font-size: 3em;
+            text-align: center;
+            flex-grow: 1;
         }
-        .header button {
-            font-size: 1.1em;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            background-color: #555; 
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .header button:hover {
-            background-color: #444;
-            transform: scale(1.05);
-        }
-
-        .header button:focus {
-            outline: none;
+        .top-buttons button {
+            font-size: 18px;
+            padding: 10px 20px;
         }
         .container {
-            margin-top: 80px; 
+            margin-top: 80px;
         }
         .highlight {
             background-color: lightblue;
         }
+        .order-details {
+            display: none;
+        }
+        .btn-right {
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="top-buttons">
         <button onclick="location.href='/'">回到首頁</button>
         <h1>訂單明細查詢</h1>
         <button onclick="location.href='/video'">結帳</button>
     </div>
-    <br/>
-    <br/>
     <br/>
     <br/>
     <div class="container mt-5">
@@ -75,11 +65,17 @@
                 <input type="date" name="end_date" id="end_date" class="form-control ml-2">
             </div>
             <button type="button" class="btn btn-primary" id="searchBtn">查詢</button>
+            <button type="button" class="btn btn-success btn-right" id="downloadButton" style="display:none;">下載 Excel</button>
         </form>
-        <div id="results"></div>
-        <div id="orderDetails" style="display: none;"></div>
-        <button id="downloadButton" type="button" class="btn btn-success mt-3" style="display:none;">下載 Excel</button>
-        <button id="backButton" type="button" class="btn btn-secondary mt-3" style="display:none;">回上頁</button>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div id="results"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="orderDetails" class="order-details"></div>
+                <button id="backButton" type="button" class="btn btn-secondary mt-3" style="display:none;">回上頁</button>
+            </div>
+        </div>
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {

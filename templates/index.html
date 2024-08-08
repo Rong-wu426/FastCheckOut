@@ -4,80 +4,120 @@
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
 <style>
-    body {
-        text-align: center;
-    }
-    h1 {
-        text-align: center;
-        color: blue;
-        font-size: 48px;
-    }
-    .button-container {
-        margin-top: 50px;
-    }
-    .button-container button {
-        font-size: 24px;
-        padding: 10px 20px;
-        margin: 10px;
-    }
-	#log {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        text-align: right;
-    }
+body {
+    font-family: 'Helvetica', sans-serif;
+    background-color: #f1f8e9; /* 淺森林綠背景 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+h1 {
+    color: #ffffff; /* 白色文字，與森林綠背景形成良好對比 */
+    font-size: 4rem;
+    margin: 0;
+    padding: 20px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #2e7d32; /* 森林綠背景 */
+    border-bottom: 1px solid #ddd;
+    z-index: 1000;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 80px);
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-container button {
+    background-color: #ff7043; /* 橙色 */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 2rem;
+    padding: 15px 30px;
+    margin: 20px;
+    cursor: pointer;
+    text-align: center; /* 確保文本水平居中 */
+    line-height: 1.5; /* 行高確保文本垂直居中 */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 280px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    white-space: nowrap; /* 防止文本換行 */
+}
+
+.button-container button:hover {
+    background-color: #ff5722; /* 深橙色 */
+    transform: scale(1.05);
+}
+
+.button-container button:active {
+    background-color: #e64a19; /* 更深的橙色 */
+    transform: scale(1);
+}
+
+#log {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #ffffff;
+    color: #333;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    max-width: 320px;
+    overflow: auto;
+}
+
+
 </style>
 </head>
 <body>
-    <div class="header">
-        <h1>秒結系統</h1>
-    </div>    
-    <div class="button-container">
-        <button onclick="location.href='/video'" style="width:200px">定點結帳</button>
-        <br>
-        <br>
-        <button onclick="location.href='/video2'" style="width:200px">流動線結帳</button>
-        <br>
-        <br>
-        <button onclick="location.href='/item'" style="width:200px">訂單明細查詢</button>
+    <h1>秒結系統</h1>
+    <div class="content">
+        <div class="button-container">
+            <button onclick="location.href='/video'">定點結帳</button>
+            <button onclick="location.href='/video2'">流動線結帳</button>
+            <button onclick="location.href='/item'">訂單明細查詢</button>
+        </div>
     </div>
 
     <div id='log'></div>
 
-        <script>
-        
+    <script>
         if ('WebSocket' in window){
             console.log('WebSocket is supported');
-        
         }
         var socket = io();
-        /*
-        var url = 'http://127.0.0.1';
-        var port = '3000';
-        var socket = io.connect(url + ':' + port);	+
-        */
         socket.on('connect', function() {
             socket.emit('connect_event', {data: 'yes, I connect successfully'});
-        
-        })
-        
-        
-        socket.on('server_response', function(msg) {
-        
-            $('#log').append('<br>' + $('<div/>').text('Received #' + ': ' + msg.data).html());
-                
-            
         });
         
+        socket.on('server_response', function(msg) {
+            $('#log').append('<div>Received #' + ': ' + $('<div/>').text(msg.data).html() + '</div>');
+        });
         
         $('form#emit').submit(function(event) {
-        
             socket.emit('client_event', {data: $('#emit_data').val()});
-        
-        return false;}
-        
-        )
-
+            return false;
+        });
     </script>
 </body>
 </html>

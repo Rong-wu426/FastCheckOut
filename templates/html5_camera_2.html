@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Table with Bootstrap</title>
+    <title>Camera 2</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <style>
         body {
             margin: 0;
+            padding: 0;
+            padding-top: 80px;
         }
+
         .header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background-color: #f0f0f0; 
-            color:  #333;
+            background-color: #004d40; /* 森林綠色 */
+            color: #ffffff; /* 白色文字 */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -24,31 +27,47 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
+
         .header h1 {
             margin: 0;
             font-size: 3.5em;
             font-weight: bold;
+            color: #e0f2f1; /* 更淺的綠色，增加對比 */
         }
+
         .header button {
-            font-size: 1.1em;
-            padding: 12px 24px;
+            font-size: 1.5em; /* 增加字體大小 */
+            padding: 14px 28px; /* 調整內邊距 */
             border: none;
             border-radius: 5px;
-            background-color: #555; 
-            color: white;
+            background-color: #00796b; /* 藍綠色，與森林綠形成對比 */
+            color: #ffffff; /* 按鈕文字顏色 */
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
+
         .header button:hover {
-            background-color: #444;
+            background-color: #004d40; /* 更深的綠色 */
             transform: scale(1.05);
         }
+
         .header button:focus {
             outline: none;
         }
+
         .container {
             margin-top: 80px;
             text-align: center;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-row h1 {
+            font-family: 'STHeiti Light', sans-serif;
+            font-size: 3em;
         }
         .button-row2 {
             display: flex;
@@ -57,27 +76,36 @@
         #checkout {
             background-color: #28a745; 
             border: none;
-            color: white;
+            color: #ffffff; /* 按鈕文字顏色 */
             padding: 12px 24px;
             font-size: 2em;
         }
+
         #checkout:hover {
             background-color: #218838; 
         }
-        .button-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        .button-row h1 {
-            font-family: 'STHeiti Light', sans-serif; 
-            font-size: 3em; 
-        }
+
         .amount {
             color: red;
             font-size: 2em;
             margin-left: 10px;
+        }
+        table th {
+            font-size: 1.5em; /* 更大的字體尺寸 */
+            text-align: center; /* 讓文字居中對齊 */
+            background-color: #004d40; /* 森林綠色背景 */
+            color: #ffffff; /* 白色文字 */
+            padding: 15px; /* 增加內邊距 */
+        }
+
+        table td {
+            font-size: 1.3em; /* 更大的字體尺寸 */
+            text-align: center; /* 讓內容居中對齊 */
+            padding: 10px; /* 增加內邊距 */
+        }
+        .btn-group .btn {
+            font-size: 1em; /* 減少按鈕文字大小 */
+            padding: 8px 16px; /* 調整內邊距以縮小按鈕 */
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>

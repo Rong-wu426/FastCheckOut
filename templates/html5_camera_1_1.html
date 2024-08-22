@@ -4,128 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera 1.1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/FastCheckOutV1.css') }}">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            padding-top: 80px;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #004d40; /* 森林綠色 */
-            color: #ffffff; /* 白色文字 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 3.5em;
-            font-weight: bold;
-            color: #e0f2f1; /* 更淺的綠色，增加對比 */
-        }
-
-        .header button {
-            font-size: 1.5em; /* 增加字體大小 */
-            padding: 14px 28px; /* 相應地調整內邊距 */
-            border: none;
-            border-radius: 5px;
-            background-color: #00796b; /* 藍綠色，與森林綠形成對比 */
-            color: #ffffff; /* 按鈕文字顏色 */
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .header button:hover {
-            background-color: #004d40; /* 更深的綠色 */
-            transform: scale(1.05);
-        }
-
-        .header button:focus {
-            outline: none;
-        }
-
-        .content {
-            margin-top: 80px;
-            text-align: center;
-        }
-
-        #snap {
-            background-color: #007bff; 
-            color: #ffffff;
-            padding: 10px 20px;
-            font-size: 2em;
-            border-radius: 5px;
-            scale: 0.75;
-        }
-
-        #snap:hover {
-            background-color: #0056b3; 
-        }
-
-        #checkout {
-            background-color: #28a745; 
-            border: none;
-            color: #ffffff; /* 按鈕文字顏色 */
-            padding: 12px 24px;
-            font-size: 2em;
-        }
-
-        #checkout:hover {
-            background-color: #218838; 
-        }
-
-        .video-container, .image-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .video-container > video, .image-container > img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .button-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .purchase-details {
-            font-family: 'STHeiti Light', sans-serif; 
-            font-size: 1.5em;
-            color: #333; 
-        }
-
-        table th {
-                    font-size: 1.5em; /* 更大的字體尺寸 */
-                    text-align: center; /* 讓文字居中對齊 */
-                    background-color: #004d40; /* 森林綠色背景 */
-                    color: #ffffff; /* 白色文字 */
-                    padding: 15px; /* 增加內邊距 */
-                }
-
-                table td {
-                    font-size: 1.3em; /* 更大的字體尺寸 */
-                    text-align: center; /* 讓內容居中對齊 */
-                    padding: 10px; /* 增加內邊距 */
-                }
-                .btn-group .btn {
-            font-size: 1em; /* 減少按鈕文字大小 */
-            padding: 8px 16px; /* 調整內邊距以縮小按鈕 */
-        }
-    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
@@ -138,30 +18,36 @@
     <div class="content">
         <div class="container mt-5">
             <div class="row">
-                <div class="col-md-6">
+                <!--影像辨識區-->
+                <div class="col-md-4">
+                    <div class="button-container">
+                        <button id="snap" class="btn btn-primary mt-2">商品辨識</button>
+                    </div>
+                    <br/>
                     <div class="video-container">
-                        <video id="video" class="w-100" height="480"></video>
+                        <video id="video" width="320" height="240"></video>
                     </div>
                     <canvas id="canvas" hidden width="640" height="480"></canvas>
+                    <img id="detect_image" class="img-fluid mt-2 scaled-image" height="480">
                 </div>
-                <div class="col-md-6">
-                    <img id="detect_image" class="img-fluid mt-2" height="480">
+                <div class="col-md-1 d-flex align-items-center justify-content-center">
+                    <hr class="vertical-line" />
                 </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="button-row mb-3">
-                        <button id="snap" class="btn btn-primary mt-2">商品辨識</button>
-                        <button id="checkout" class="btn btn-success mb-3">結帳</button>
-                    </div>  
-                    <div class="purchase-details">
-                        <div class="button-row mb-3">
-                            <h1 class="mb-4">購買明細  </h1> 
-                            <h1 style="color: red;"><span id="amount">0</span> 元</h1>
+                <!--結帳區-->
+                <div class="col-md-7">
+                    <div class="flex-container mb-3">
+                        <div class="flex-item-left">
+                            <h2>購買明細</h2>
+                        </div>
+                        <div class="flex-item-middle">
+                            <button id="checkout" class="btn btn-success">結帳</button>
+                        </div>
+                        <div class="flex-item-right">
+                            <h1 style="color: red; margin: 0;"><span id="amount">0</span> 元</h1>
                         </div>
                     </div>
-                    <div id="container">
+                    <!--表格-->
+                    <div class="table-container">
                         <table id="item-table" class="table table-bordered table-hover">
                             <thead class="thead-dark">
                                 <tr>
@@ -177,6 +63,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <!--訂單狀態訊息-->
                     <div id="order-status" class="alert alert-success" role="alert" style="display: none;">
                         訂單已成功存檔！
                     </div>
@@ -324,8 +211,6 @@
             });
             $("#amount").text(total);
         }
-
-
     </script>
 </body>
 </html>

@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera 1.1</title>
+    <title>定點結帳</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/FastCheckOutV1.css') }}">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
     <div class="header">
         <button onclick="location.href='/'">回到首頁</button>
-        <h1>秒結系統</h1>
+        <h1>定點結帳</h1>
         <button onclick="location.href='/item'">訂單查詢</button>
     </div>
     <div class="content">
@@ -28,7 +28,7 @@
                         <video id="video" width="320" height="240"></video>
                     </div>
                     <canvas id="canvas" hidden width="640" height="480"></canvas>
-                    <img id="detect_image" class="img-fluid mt-2 scaled-image" height="480">
+                    <img id="detect_image" class="img-fluid mt-2 scaled-image">
                 </div>
                 <div class="col-md-1 d-flex align-items-center justify-content-center">
                     <hr class="vertical-line" />
@@ -37,20 +37,18 @@
                 <div class="col-md-7">
                     <div class="flex-container mb-3">
                         <div class="flex-item-left">
-                            <h2>購買明細</h2>
-                        </div>
-                        <div class="flex-item-middle">
+                            <span id="ContentPurchaseList">購買明細</span>
                             <button id="checkout" class="btn btn-success">結帳</button>
                         </div>
                         <div class="flex-item-right">
-                            <h1 style="color: red; margin: 0;"><span id="amount">0</span> 元</h1>
+                            <h1><span id="amount">0</span> 元</h1>
                         </div>
                     </div>
                     <!--表格-->
                     <div class="table-container">
                         <table id="item-table" class="table table-bordered table-hover">
-                            <thead class="thead-dark">
-                                <tr>
+                           
+                             <thead class="thead-dark">    <tr>
                                     <th>商品編號</th>
                                     <th>商品名稱</th>
                                     <th>數量</th>
@@ -72,145 +70,6 @@
         </div>
     </div>
 
-    <script>
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-                video.srcObject = stream;
-                video.play();
-            });
-        }
-
-        if ('WebSocket' in window){
-            console.log('WebSocket is supported');
-        }
-        var socket = io();
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        var video = document.getElementById('video');
-        var detect_image = document.getElementById("detect_image");
-
-        socket.on('object_detection_event', function(msg){    
-            console.log('got object_detection_event');
-            detect_image.src = 'data:image/png;base64,' + msg;
-        });
-
-        document.getElementById("snap").addEventListener("click", function() {
-            context.drawImage(video, 0, 0, 640, 480);    
-            var data = canvas.toDataURL();    
-            var base64 = data.replace(/^data:image\/(png|jpg);base64,/, "");
-            socket.emit('capture_event', base64);
-        });
-
-        socket.on('connect', function() {
-            console.log('I connect successfully');
-        });
-
-        socket.on('new_item_event', function(msg){    
-            console.log('got new_item_event');
-            var itemlist = JSON.parse(msg['data']);
-            console.log(itemlist);
-            add_item(itemlist);
-        });
-
-        socket.on('detected_objects', function(msg){    
-            console.log('got detected_objects');
-            var itemlist = JSON.parse(msg['objs']);
-            console.log(itemlist);
-            add_item(itemlist);
-        });
-
-        update_amount();
-
-        $(document).on('click', ".delete-me", function() {
-            $(this).closest('tr').remove();
-            update_amount();
-        });
-
-        $("#add").on('click', function() {
-            socket.emit('new_item_event', '');
-            update_amount();
-        });
-
-        $("#getall").on('click', function() {
-            socket.emit('get_allitem_event', '');
-        });
-
-        $(document).on('click', ".add-me", function() {
-            var qtyInput = $(this).closest('tr').find('.item-quantity');
-            qtyInput.val(parseInt(qtyInput.val()) + 1);
-            update_amount();
-        });
-
-        $(document).on('click', ".decrease-qty", function() {
-            var qtyInput = $(this).closest('tr').find('.item-quantity');
-            var currentQty = parseInt(qtyInput.val());
-            if (currentQty > 1) {
-                qtyInput.val(currentQty - 1);
-            } else if (currentQty == 1) {
-                $(this).closest('tr').remove();
-            }
-            update_amount();
-        });
-
-        $("#checkout").on('click', function() {
-            var items = [];
-            $('#item-table tbody tr').each(function() {
-                var productId = $(this).find("td:eq(0) a").text().trim();
-                var name = $(this).find("td:eq(1)").text().trim();
-                var quantity = parseInt($(this).find('.item-quantity').val().trim(), 10);
-                var price = parseFloat($(this).find("td:eq(3)").text().trim());
-                
-                items.push({
-                    productId: productId,
-                    name: name,
-                    quantity: quantity,
-                    price: price
-                });
-            });
-            console.log(items);
-            socket.emit('checkout_event', {items: items});
-        });
-
-        socket.on('order_saved', function(msg) {
-            console.log('接收到order_saved事件');
-            console.log(msg.status);
-            var orderStatus = document.getElementById('order-status');
-            orderStatus.textContent = msg.status;
-            orderStatus.style.display = 'block';
-        });
-
-        function add_item(itemlist) {
-            for (var i in itemlist) {
-                var item = itemlist[i];
-                var row = `<tr>
-                    <td><a href='#'>${item['p_id']}</a></td>
-                    <td>${item['p_name']}</td>
-                    <td><input type='number' class='item-quantity form-control' value='1' min='1' style='width: 80px;'></td>
-                    <td>${item['p_price']}</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary add-me">+</button>
-                            <button type="button" class="btn btn-outline-secondary decrease-qty">-</button>
-                            <button type="button" class="btn btn-outline-danger delete-me">Del</button>
-                        </div>
-                    </td>
-                </tr>`;
-                $("#item-table tbody").append(row);
-            }
-            update_amount();
-        }
-
-        function update_amount() {
-            var total = 0;
-            $('#item-table tbody tr').each(function() {
-                var price = parseFloat($(this).find("td:eq(3)").text());
-                var quantity = parseInt($(this).find('.item-quantity').val());
-                if (!isNaN(price) && !isNaN(quantity)) {
-                    total += price * quantity;
-                }
-            });
-            $("#amount").text(total);
-        }
-    </script>
+    <script src="{{ url_for('static', filename='JavaScript/FastCheckOutV1.js') }}"></script>
 </body>
 </html>

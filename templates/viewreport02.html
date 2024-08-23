@@ -2,138 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>訂單明細查詢</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ViewReport.css') }}">
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding-top: 80px; /* Add padding to account for fixed header */
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #004d40; /* 森林綠色 */
-            color: #ffffff; /* 白色文字 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 3.5em;
-            font-weight: bold;
-            color: #e0f2f1; /* 更淺的綠色，增加對比 */
-        }
-
-        .header button {
-            font-size: 1.5em; /* 增加字體大小 */
-            padding: 14px 28px; /* 相應地調整內邊距 */
-            border: none;
-            border-radius: 5px;
-            background-color: #00796b; /* 藍綠色，與森林綠形成對比 */
-            color: #ffffff; /* 按鈕文字顏色 */
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .header button:hover {
-            background-color: #004d40; /* 更深的綠色 */
-            transform: scale(1.05);
-        }
-
-        .header button:focus {
-            outline: none;
-        }
-
-        .container {
-            margin-top: 80px;
-        }
-
-        .table th {
-            font-size: 1.5em; /* 更大的字體尺寸 */
-            text-align: center; /* 讓文字居中對齊 */
-            background-color: #004d40; /* 森林綠色背景 */
-            color: #ffffff; /* 白色文字 */
-            padding: 15px; /* 增加內邊距 */
-        }
-
-        .table td {
-            font-size: 1.3em; /* 更大的字體尺寸 */
-            text-align: center; /* 讓內容居中對齊 */
-            padding: 10px; /* 增加內邊距 */
-        }
-
-        .highlight {
-            background-color: #e6f7ff; /* 淺藍色 */
-        }
-
-        .btn-group .btn {
-            font-size: 1em; /* 減少按鈕文字大小 */
-            padding: 8px 16px; /* 調整內邊距以縮小按鈕 */
-        }
-        
-        .form-group label {
-            font-size: 1.2em; /* 增加标签字体大小 */
-            margin-right: 10px; /* 增加标签与输入框之间的间距 */
-        }
-
-        .form-group input[type="date"] {
-            font-size: 1.2em; /* 增加输入框字体大小 */
-            padding: 10px; /* 增加输入框内边距 */
-        }
-
-        #results, #orderDetails {
-            font-size: 1.2em; /* 增加字体大小 */
-            padding: 20px; /* 增加内边距 */
-            border: 1px solid #ddd; /* 添加边框，以增强视觉效果 */
-            border-radius: 5px; /* 圆角边框 */
-            background-color: #ffffff; /* 背景色 */
-            margin-bottom: 20px; /* 增加下边距 */
-        }
-
-        /* Flexbox布局 */
-        .results-container {
-            display: flex;
-            flex-direction: row; /* 水平排列 */
-            gap: 20px; /* 设定左右间距 */
-        }
-
-        #results {
-            flex: 1; /* 表格占一半宽度 */
-        }
-
-        #orderDetails {
-            flex: 1; /* ID 显示区域占一半宽度 */
-        }
-
-        .order-id {
-            font-size: 1.5em; /* 更大的字体尺寸 */
-            padding: 20px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .search-form-container {
-            display: flex;
-            justify-content: space-between; /* 使子元素两端对齐 */
-            align-items: center; /* 垂直居中 */
-        }
-
-        .search-form-container .btn {
-            margin-left: 20px; /* 为下载按钮添加左边距 */
-        }
-    </style>
+    
 </head>
 <body>
     <div class="header">
@@ -144,125 +17,20 @@
     <div class="container mt-5">
         <div class="search-form-container mb-4">
             <form id="searchForm" class="form-inline">
-                <div class="form-group mr-2">
-                    <label for="start_date">日期區間起:</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control ml-2">
-                </div>
-                <div class="form-group mr-2">
-                    <label for="end_date">迄:</label>
-                    <input type="date" name="end_date" id="end_date" class="form-control ml-2">
-                </div>
-                <button type="button" class="btn btn-primary" id="searchBtn">查詢</button>
+                <label for="start_date">日期區間起:</label>
+                <input type="date" name="start_date" id="start_date" class="form-control ml-2">
+                <label for="end_date">迄:</label>
+                <input type="date" name="end_date" id="end_date" class="form-control ml-2">
             </form>
-            <button id="downloadButton" type="button" class="btn btn-success" style="display:none;">下載 Excel</button>
+            <button type="button" class="btn btn-primary" id="searchBtn">查詢</button>
+            <button type="button" class="btn btn-success" id="downloadButton">下載 Excel</button>
         </div>
         <div class="results-container">
             <div id="results"></div>
             <div id="orderDetails" class="order-id"></div>
         </div>
-        <button id="backButton" type="button" class="btn btn-secondary mt-3" style="display:none;">回上頁</button>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var socket = io.connect('http://127.0.0.1:3000');
-            
-            // Calculate the date range
-            var end_date = new Date();
-            var start_date = new Date();
-            start_date.setDate(start_date.getDate() - 30);
-            
-            // Format dates as YYYY-MM-DD
-            function formatDate(date) {
-                var d = new Date(date),
-                    month = '' + (d.getMonth() + 1),
-                    day = '' + d.getDate(),
-                    year = d.getFullYear();
-            
-                if (month.length < 2) month = '0' + month;
-                if (day.length < 2) day = '0' + day;
-            
-                return [year, month, day].join('-');
-            }
-            
-            document.getElementById('start_date').value = formatDate(start_date);
-            document.getElementById('end_date').value = formatDate(end_date);
-    
-            // Emit the search event with the default date range
-            socket.emit('search', { start_date: formatDate(start_date).replace(/-/g, ''), end_date: formatDate(end_date).replace(/-/g, '') });
-            
-            document.getElementById('searchBtn').addEventListener('click', function() {
-                var start_date = document.getElementById('start_date').value;
-                var end_date = document.getElementById('end_date').value;
-                console.log('Start date: ', start_date);  // Debug line
-                console.log('End date: ', end_date);  // Debug line
-                socket.emit('search', { start_date: start_date.replace(/-/g, ''), end_date: end_date.replace(/-/g, '') });
-            });
-        
-            socket.on('search_results', function(data) {
-                console.log('Search results:', data);  // Debug line
-                var resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '';
-                if (!Array.isArray(data.results)) {
-                    console.error('Expected results to be an array:', data.results);
-                    return;
-                }
-                var table = document.createElement('table');
-                table.className = 'table table-bordered';
-                var thead = document.createElement('thead');
-                var headerRow = document.createElement('tr');
-                headerRow.innerHTML = '<th>訂單編號</th><th>訂單日期</th><th>金額</th>';
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-                var tbody = document.createElement('tbody');
-                var orders = data.results;
-                orders.forEach(order => {
-                    var row = document.createElement('tr');
-                    row.innerHTML = `<td><a href="#" class="order-link" data-id="${order['訂單編號']}">${order['訂單編號']}</a></td><td>${order['訂單日期']}</td><td>${order['金額']}</td>`;
-                    tbody.appendChild(row);
-                });
-                table.appendChild(tbody);
-                resultsDiv.appendChild(table);
-                document.getElementById('downloadButton').style.display = 'block';
-        
-                document.querySelectorAll('.order-link').forEach(function(link) {
-                    link.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        showDetails(this.getAttribute('data-id'));
-                    });
-                });
-            });
-        
-            function showDetails(orderId) {
-                socket.emit('get_order_details', { o_id: orderId });
-            }
-        
-            socket.on('order_details', function(data) {
-                var detailsDiv = document.getElementById('orderDetails');
-                detailsDiv.innerHTML = `<h3>訂單明細資料</h3><p>訂單編號: ${data.order_id}</p><p>訂單日期: ${data.order_date}</p>` + data.details;
-                detailsDiv.style.display = 'block';
-        
-                // Highlight the selected order
-                document.querySelectorAll('#results tr').forEach(row => row.classList.remove('highlight'));
-                document.querySelector(`#results tr td a[data-id='${data.order_id}']`).parentElement.parentElement.classList.add('highlight');
-            });
-        
-            document.getElementById('downloadButton').addEventListener('click', function() {
-                window.location.href = '/download';
-            });
-        
-            socket.on('download', function(data) {
-                if (data.file.endsWith('.xlsx')) {
-                    var link = document.createElement('a');
-                    link.href = data.file;
-                    link.download = data.file.split('/').pop();
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } else {
-                    alert(data.file);
-                }
-            });
-        });
-    </script>
+
+    <script src="{{ url_for('static', filename='JavaScript/ViewReport.js') }}"></script>
 </body>
 </html>

@@ -3,258 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera 2</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            padding-top: 80px;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #004d40; /* 森林綠色 */
-            color: #ffffff; /* 白色文字 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 3.5em;
-            font-weight: bold;
-            color: #e0f2f1; /* 更淺的綠色，增加對比 */
-        }
-
-        .header button {
-            font-size: 1.5em; /* 增加字體大小 */
-            padding: 14px 28px; /* 調整內邊距 */
-            border: none;
-            border-radius: 5px;
-            background-color: #00796b; /* 藍綠色，與森林綠形成對比 */
-            color: #ffffff; /* 按鈕文字顏色 */
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .header button:hover {
-            background-color: #004d40; /* 更深的綠色 */
-            transform: scale(1.05);
-        }
-
-        .header button:focus {
-            outline: none;
-        }
-
-        .container {
-            margin-top: 80px;
-            text-align: center;
-        }
-        .button-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .button-row h1 {
-            font-family: 'STHeiti Light', sans-serif;
-            font-size: 3em;
-        }
-        .button-row2 {
-            display: flex;
-            justify-content: flex-end; 
-        }
-        #checkout {
-            background-color: #28a745; 
-            border: none;
-            color: #ffffff; /* 按鈕文字顏色 */
-            padding: 12px 24px;
-            font-size: 2em;
-        }
-
-        #checkout:hover {
-            background-color: #218838; 
-        }
-
-        .amount {
-            color: red;
-            font-size: 2em;
-            margin-left: 10px;
-        }
-        table th {
-            font-size: 1.5em; /* 更大的字體尺寸 */
-            text-align: center; /* 讓文字居中對齊 */
-            background-color: #004d40; /* 森林綠色背景 */
-            color: #ffffff; /* 白色文字 */
-            padding: 15px; /* 增加內邊距 */
-        }
-
-        table td {
-            font-size: 1.3em; /* 更大的字體尺寸 */
-            text-align: center; /* 讓內容居中對齊 */
-            padding: 10px; /* 增加內邊距 */
-        }
-        .btn-group .btn {
-            font-size: 1em; /* 減少按鈕文字大小 */
-            padding: 8px 16px; /* 調整內邊距以縮小按鈕 */
-        }
-    </style>
+    <title>流動線結帳</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/FastCheckOutV2.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
     <div class="header">
         <button onclick="location.href='/'">回到首頁</button>
-        <h1>秒結系統</h1>
+        <h1>流動線結帳</h1>
         <button onclick="location.href='/item'">訂單查詢</button>
     </div>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="button-row2 mb-3">
-                    <button id="checkout" class="btn btn-success mb-3">結帳</button>
-                </div>
-                <div class="button-row mb-3">
-                    <h1 class="mb-4 purchase-details">購買明細  </h1>
-                    <h1 style="color: red;"><span id="amount">0</span> 元</h1>
-                </div>
-                
-                <div id="container">
-                    <table id="item-table" class="table table-bordered table-hover">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>商品編號</th>
-                                <th>商品名稱</th>
-                                <th>數量</th>
-                                <th>價格</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+    <div class="content">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="flex-container">
+                        <div class="flex-item-left">
+                            <span id="ContentPurchaseList">購買明細</span>
+                            <button id="checkout" class="btn btn-success">結帳</button>
+                        </div>
+                        <div class="flex-item-right">
+                            <h1><span id="amount">0</span> 元</h1>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="item-table" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>商品編號</th>
+                                    <th>商品名稱</th>
+                                    <th>數量</th>
+                                    <th>價格</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        if ('WebSocket' in window) {
-            console.log('WebSocket is supported');
-        }
-        var socket = io();
-
-        socket.on('connect', function() {
-            console.log('I connect successfully');
-        });
-
-        socket.on('new_item_event', function(msg) {    
-            console.log('got new_item_event');
-            var itemlist = JSON.parse(msg['data']);
-            console.log(itemlist);
-            add_item(itemlist);
-        });
-
-        socket.on('detected_objects', function(msg) {    
-            console.log('got detected_objects');
-            var itemlist = JSON.parse(msg['objs']);
-            console.log(itemlist);
-            add_item(itemlist);
-        });
-
-        update_amount();
-
-        $(document).on('click', ".delete-me", function() {
-            var entry = $(this).closest('tr'); 
-            entry.remove();
-            update_amount();
-        });
-
-        $(document).on('click', ".add-me", function() {
-            var qtyInput = $(this).closest('tr').find('.item-quantity');
-            qtyInput.val(parseInt(qtyInput.val()) + 1);
-            update_amount();
-        });
-
-        $(document).on('click', ".decrease-qty", function() {
-            var qtyInput = $(this).closest('tr').find('.item-quantity');
-            var currentQty = parseInt(qtyInput.val());
-            if (currentQty > 1) {
-                qtyInput.val(currentQty - 1);
-            } else if (currentQty == 1) {
-                var entry = $(this).closest('tr');
-                entry.remove();
-            }
-            update_amount();
-        });
-
-        $("#checkout").on('click', function() {
-            if (confirm("確認是否結帳!")) {
-                var items = [];
-                $('#item-table tbody tr').each(function() {
-                    var productId = $(this).find("td:eq(0) a").text().trim();
-                    var name = $(this).find("td:eq(1)").text().trim();
-                    var quantity = parseInt($(this).find('.item-quantity').val().trim(), 10);
-                    var price = parseFloat($(this).find("td:eq(3)").text().trim());
-
-                    items.push({
-                        productId: productId,
-                        name: name,
-                        quantity: quantity,
-                        price: price
-                    });
-                });
-                console.log(items);
-                socket.emit('checkout_event', {items: items});
-                setTimeout("location.href='http://localhost:3000/'",1000);
-            } 
-        });
-
-        function add_item(itemlist) {
-            for (var i in itemlist) {
-                var item = itemlist[i];
-                var row = `<tr>
-                    <td><a href='#'>${item['p_id']}</a></td>
-                    <td>${item['p_name']}</td>
-                    <td><input type='number' class='item-quantity form-control' value='1' min='1' style='width: 80px;'></td>
-                    <td>${item['p_price']}</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary add-me">+</button>
-                            <button type="button" class="btn btn-outline-secondary decrease-qty">-</button>
-                            <button type="button" class="btn btn-outline-danger delete-me">Del</button>
-                        </div>
-                    </td>
-                </tr>`;
-                $("#item-table tbody").append(row);
-            }
-            update_amount();
-        }
-
-        function update_amount() {
-            var total = 0;
-            $('#item-table tbody tr').each(function() {
-                var price = parseFloat($(this).find("td:eq(3)").text());
-                var quantity = parseInt($(this).find('.item-quantity').val());
-                if (!isNaN(price) && !isNaN(quantity)) {
-                    total += price * quantity;
-                }
-            });
-            $("#amount").text(total);
-        }
-    </script>
+    <script src="{{ url_for('static', filename='JavaScript/FastCheckOutV2.js') }}"></script>
 </body>
 </html>

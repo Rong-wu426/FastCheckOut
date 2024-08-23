@@ -1,0 +1,154 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding-top: 80px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #004d40;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 4em;
+    font-weight: bold;
+    color: #e0f2f1;
+    white-space: nowrap;
+}
+
+.header button {
+    font-size: 2em;
+    font-weight: bolder;
+    padding: 0.4em 1em;
+    border: none;
+    border-radius: 4px;
+    background-color: #00796b;
+    color: #ffffff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.header button:hover {
+    background-color: #004d40;
+    transform: scale(1.05);
+}
+
+.header button:focus {
+    outline: none;
+}
+
+.container {
+    margin-top: 60px;
+}
+
+.search-form-container {
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    font-size: 1.5em;
+    margin-bottom: 2rem;
+}
+
+.search-form-container input {
+    width: 150px;
+    height: 20px;
+    font-size: 1em; 
+    padding: 5px; 
+}
+
+.search-form-container button{
+    font-size: 1rem;
+    padding: 0.75em 1.75em;
+    border: none;
+    border-radius: 6px;
+    background-color: #28a745;
+    color: #ffffff;
+    cursor: pointer;
+    margin: 0rem 0.5rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.search-form-container button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.table th {
+    font-size: 1.5rem;
+    text-align: center;
+    background-color: #004d40;
+    color: #ffffff;
+    padding: 15px;
+}
+
+.table td {
+    font-size: 1.3em;
+    text-align: center;
+    padding: 10px;
+}
+
+.highlight {
+    background-color: #e6f7ff;
+}
+
+.btn-group .btn {
+    font-size: 1em;
+    padding: 8px 16px;
+}
+
+.form-group label {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.form-group input[type="date"] {
+    font-size: 1.2em;
+    padding: 10px;
+}
+
+#results, #orderDetails {
+    font-size: 1.2em;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#orderDetails {
+    flex: 1;
+}
+
+.order-id {
+    font-size: 1.5em;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
